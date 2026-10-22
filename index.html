@@ -12,7 +12,6 @@
     --gold:#b08d4f;
     --gold-l:#e2c68d;
     --paper:#fbf7ee;
-    --deep:#0c1f1a;
   }
 
   *{margin:0;padding:0;box-sizing:border-box;}
@@ -52,44 +51,64 @@
     background:linear-gradient(90deg,#8b6d3a,#e2c68d);
     box-shadow:0 0 10px rgba(226,198,141,.55);
     transition:width .08s linear;
+    opacity:0;
+    pointer-events:none;
   }
+  .progress.on{opacity:1;}
 
-  /* ================= 封面 ================= */
-  .hero{
-    position:relative;
-    min-height:100svh;
+  /* ================= 信封封面 ================= */
+  .envelope-screen{
+    position:fixed;
+    inset:0;
+    z-index:9990;
     display:grid;
     place-items:center;
-    padding:10vh 1.5rem;
-    text-align:center;
-    overflow:hidden;
-    isolation:isolate;
-    color:#f6efe0;
+    padding:1.5rem;
     background:
-      radial-gradient(58% 42% at 50% 32%, rgba(226,198,141,.17), transparent 72%),
+      radial-gradient(58% 42% at 50% 34%, rgba(226,198,141,.16), transparent 72%),
       radial-gradient(95% 75% at 50% 112%, rgba(28,92,76,.5), transparent 72%),
       linear-gradient(168deg,#0f2823 0%,#0a1a17 52%,#050d0b 100%);
+    transition:opacity 1.1s cubic-bezier(.4,0,.2,1), visibility 1.1s;
+    overflow:hidden;
+  }
+  .envelope-screen.gone{
+    opacity:0;
+    visibility:hidden;
+    pointer-events:none;
   }
 
-  /* 缓慢旋转的装饰圆环 */
-  .hero::before{
-    content:"";
+  /* 光晕 */
+  .halo{
     position:absolute;
+    width:min(120vw,900px);
+    aspect-ratio:1;
+    border-radius:50%;
+    background:radial-gradient(circle, rgba(226,198,141,.14) 0%, rgba(226,198,141,.05) 38%, transparent 68%);
+    filter:blur(6px);
+    animation:breathe 9s ease-in-out infinite;
+    pointer-events:none;
+  }
+  @keyframes breathe{
+    0%,100%{transform:scale(1);opacity:.75;}
+    50%{transform:scale(1.13);opacity:1;}
+  }
+
+  /* 旋转圆环 */
+  .ring{
+    position:absolute;
+    border-radius:50%;
+    pointer-events:none;
+  }
+  .ring.a{
     width:min(88vw,620px);
     aspect-ratio:1;
-    border:1px solid rgba(226,198,141,.13);
-    border-radius:50%;
-    z-index:0;
+    border:1px solid rgba(226,198,141,.14);
     animation:spin 90s linear infinite;
   }
-  .hero::after{
-    content:"";
-    position:absolute;
+  .ring.b{
     width:min(62vw,430px);
     aspect-ratio:1;
     border:1px dashed rgba(226,198,141,.10);
-    border-radius:50%;
-    z-index:0;
     animation:spin 140s linear infinite reverse;
   }
   @keyframes spin{
@@ -97,119 +116,10 @@
     to{transform:rotate(360deg);}
   }
 
-  .hero-inner{
-    position:relative;
-    z-index:3;
-    max-width:36rem;
-  }
-
-  .eyebrow{
-    font-size:.7rem;
-    letter-spacing:.62em;
-    text-indent:.62em;
-    color:#c9a35c;
-    margin-bottom:2.2rem;
-    opacity:0;
-    animation:fadeUp 1.2s .2s cubic-bezier(.2,.8,.3,1) forwards;
-  }
-
-  .hero h1{
-    font-size:clamp(2.9rem,11.5vw,5.2rem);
-    font-weight:600;
-    letter-spacing:.2em;
-    text-indent:.2em;
-    line-height:1.25;
-    color:#f3e3bd;
-    text-shadow:0 0 50px rgba(240,210,150,.35), 0 0 110px rgba(240,210,150,.15);
-  }
-
-  .hero h1 .ch{
-    display:inline-block;
-    opacity:0;
-    transform:translateY(26px) scale(.96);
-    animation:riseIn 1s cubic-bezier(.2,.8,.3,1) forwards;
-  }
-
-  .hero-rule{
-    width:0;
-    height:1px;
-    margin:2.4rem auto 1.8rem;
-    background:linear-gradient(90deg,transparent,rgba(226,198,141,.75),transparent);
-    animation:growRule 1.6s 1.1s cubic-bezier(.2,.8,.3,1) forwards;
-  }
-
-  .hero .sub{
-    font-size:clamp(.9rem,3.2vw,1.04rem);
-    letter-spacing:.1em;
-    color:#ddd3bd;
-    opacity:0;
-    animation:fadeUp 1.2s 1.3s cubic-bezier(.2,.8,.3,1) forwards;
-  }
-
-  .hero .note{
-    margin-top:2.2rem;
-    font-size:.86rem;
-    letter-spacing:.08em;
-    line-height:2.1;
-    color:#a9a08c;
-    opacity:0;
-    animation:fadeUp 1.2s 1.7s cubic-bezier(.2,.8,.3,1) forwards;
-  }
-
-  .scroll-cue{
-    position:absolute;
-    bottom:clamp(1.4rem,4vh,2.6rem);
-    left:50%;
-    transform:translateX(-50%);
-    z-index:3;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    gap:.9rem;
-    font-size:.66rem;
-    letter-spacing:.45em;
-    text-indent:.45em;
-    color:#8e8773;
-    opacity:0;
-    animation:fadeUp 1.2s 2.2s forwards;
-  }
-  .scroll-cue i{
-    display:block;
-    width:1px;
-    height:46px;
-    background:linear-gradient(180deg,rgba(226,198,141,.8),transparent);
-    position:relative;
-    overflow:hidden;
-  }
-  .scroll-cue i::after{
-    content:"";
-    position:absolute;
-    top:-46px;left:0;
-    width:1px;height:46px;
-    background:linear-gradient(180deg,transparent,#f0d79c);
-    animation:cueDrop 2.4s ease-in-out infinite;
-  }
-  @keyframes cueDrop{
-    0%{top:-46px;}
-    70%,100%{top:46px;}
-  }
-
-  @keyframes fadeUp{
-    from{opacity:0;transform:translateY(18px);}
-    to{opacity:1;transform:none;}
-  }
-  @keyframes riseIn{
-    to{opacity:1;transform:none;}
-  }
-  @keyframes growRule{
-    to{width:150px;}
-  }
-
-  /* ================= 飘落的叶子 ================= */
+  /* 叶子 */
   .leaves{
     position:absolute;
     inset:0;
-    z-index:2;
     pointer-events:none;
     overflow:hidden;
   }
@@ -224,32 +134,202 @@
     animation-iteration-count:infinite;
     will-change:transform;
   }
-  .leaf::after{
-    content:"";
-    position:absolute;
-    inset:14% 14% 14% 14%;
-    border-right:1px solid rgba(90,55,15,.28);
-    border-radius:0 100% 0 100%;
-  }
   @keyframes fall{
-    0%{
-      transform:translate3d(0,-10vh,0) rotate(0deg);
-      opacity:0;
-    }
+    0%{transform:translate3d(0,-10vh,0) rotate(0deg);opacity:0;}
     8%{opacity:.8;}
     80%{opacity:.5;}
-    100%{
-      transform:translate3d(var(--drift,40px),112vh,0) rotate(760deg);
-      opacity:0;
-    }
+    100%{transform:translate3d(var(--drift,40px),112vh,0) rotate(760deg);opacity:0;}
   }
 
-  /* ================= 信纸 ================= */
+  /* 信封容器 */
+  .envelope-wrap{
+    position:relative;
+    z-index:5;
+    width:min(92vw,430px);
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:2.2rem;
+  }
+
+  /* 信封本体 */
+  .envelope{
+    position:relative;
+    width:100%;
+    aspect-ratio:1.5 / 1;
+    cursor:pointer;
+    -webkit-tap-highlight-color:transparent;
+    filter:drop-shadow(0 30px 45px rgba(0,0,0,.5));
+    transition:transform .5s cubic-bezier(.2,.8,.3,1);
+    animation:envFloat 5s ease-in-out infinite;
+    outline:none;
+    border:none;
+    background:none;
+    padding:0;
+    font-family:inherit;
+  }
+  @keyframes envFloat{
+    0%,100%{transform:translateY(0);}
+    50%{transform:translateY(-9px);}
+  }
+  .envelope:hover,
+  .envelope:focus-visible{
+    transform:translateY(-14px) scale(1.02);
+  }
+  .envelope:focus-visible{
+    outline:2px solid rgba(226,198,141,.75);
+    outline-offset:8px;
+    border-radius:4px;
+  }
+
+  /* 信封底 */
+  .env-body{
+    position:absolute;
+    inset:0;
+    border-radius:6px;
+    background:linear-gradient(160deg,#f2e6cd 0%,#e6d5b2 55%,#d8c49a 100%);
+    box-shadow:inset 0 0 0 1px rgba(120,95,55,.18);
+    overflow:hidden;
+  }
+
+  /* 信封折线装饰 */
+  .env-body::before{
+    content:"";
+    position:absolute;
+    left:0;right:0;top:0;
+    height:52%;
+    background:linear-gradient(160deg,#f7ecd6 0%,#ead9b8 100%);
+    clip-path:polygon(0 0, 100% 0, 50% 100%);
+    box-shadow:0 3px 6px rgba(120,95,55,.12);
+  }
+  .env-body::after{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:
+      linear-gradient(to top right, transparent calc(50% - 1px), rgba(120,95,55,.14) 50%, transparent calc(50% + 1px)),
+      linear-gradient(to top left, transparent calc(50% - 1px), rgba(120,95,55,.14) 50%, transparent calc(50% + 1px));
+    pointer-events:none;
+  }
+
+  /* 信封中央的蜡封 */
+  .env-seal{
+    position:absolute;
+    left:50%;
+    top:50%;
+    transform:translate(-50%,-50%);
+    width:74px;height:74px;
+    border-radius:50%;
+    display:grid;
+    place-items:center;
+    color:#f7ddd0;
+    font-size:10.5px;
+    line-height:1.5;
+    letter-spacing:.14em;
+    text-align:center;
+    background:radial-gradient(circle at 34% 28%, #c04048, #8a2029 62%, #661319 100%);
+    box-shadow:
+      inset 0 2px 5px rgba(255,220,210,.32),
+      inset 0 -6px 12px rgba(0,0,0,.42),
+      0 8px 18px -8px rgba(110,20,30,.9);
+    z-index:3;
+    transition:transform .5s cubic-bezier(.2,.8,.3,1), box-shadow .5s;
+  }
+  .env-seal::before{
+    content:"";
+    position:absolute;
+    inset:8px;
+    border:1px dashed rgba(255,215,200,.35);
+    border-radius:50%;
+  }
+  .envelope:hover .env-seal,
+  .envelope:focus-visible .env-seal{
+    transform:translate(-50%,-50%) scale(1.08) rotate(-6deg);
+    box-shadow:
+      inset 0 2px 5px rgba(255,220,210,.32),
+      inset 0 -6px 12px rgba(0,0,0,.42),
+      0 12px 26px -8px rgba(110,20,30,1);
+  }
+
+  /* 收件人小字 */
+  .env-address{
+    position:absolute;
+    left:0;right:0;
+    bottom:12%;
+    text-align:center;
+    font-size:.72rem;
+    letter-spacing:.32em;
+    text-indent:.32em;
+    color:#8a7550;
+    z-index:3;
+    pointer-events:none;
+  }
+  .env-stamp{
+    position:absolute;
+    right:7%;
+    top:6%;
+    width:44px;
+    height:52px;
+    border:1px dashed rgba(120,95,55,.4);
+    border-radius:2px;
+    display:grid;
+    place-items:center;
+    font-size:9px;
+    letter-spacing:.1em;
+    color:#9a835c;
+    background:rgba(255,250,240,.5);
+    z-index:3;
+    pointer-events:none;
+  }
+
+  /* 提示文字 */
+  .env-hint{
+    text-align:center;
+    color:#c9b78a;
+    font-size:.76rem;
+    letter-spacing:.42em;
+    text-indent:.42em;
+    animation:hintBlink 2.8s ease-in-out infinite;
+  }
+  @keyframes hintBlink{
+    0%,100%{opacity:.5;}
+    50%{opacity:1;}
+  }
+  .env-top{
+    font-size:.68rem;
+    letter-spacing:.6em;
+    text-indent:.6em;
+    color:#a08e62;
+    margin-bottom:-.6rem;
+  }
+
+  /* 信封打开时的动画：信封向上飞出 */
+  .envelope-screen.opening .envelope-wrap{
+    animation:envFly .95s cubic-bezier(.4,0,.2,1) forwards;
+  }
+  @keyframes envFly{
+    0%{transform:translateY(0) scale(1);opacity:1;}
+    35%{transform:translateY(-14px) scale(1.03);opacity:1;}
+    100%{transform:translateY(-130vh) scale(.85);opacity:0;}
+  }
+
+  /* ================= 主内容（信） ================= */
+  .site{
+    opacity:0;
+    visibility:hidden;
+    transition:opacity 1.2s cubic-bezier(.4,0,.2,1), visibility 1.2s;
+  }
+  .site.show{
+    opacity:1;
+    visibility:visible;
+  }
+
   main{
     position:relative;
     padding:clamp(2.4rem,7vw,4.5rem) 1rem clamp(2rem,6vw,4rem);
     background:
       radial-gradient(120% 60% at 50% 0%, #f4eddd 0%, #e9e0cc 60%, #e3d9c2 100%);
+    min-height:100svh;
   }
 
   .paper{
@@ -266,7 +346,6 @@
       inset 0 0 0 1px rgba(255,255,255,.7);
   }
 
-  /* 信纸四角的细线装饰 */
   .paper::before,
   .paper::after{
     content:"";
@@ -284,7 +363,6 @@
     border-left:none;border-top:none;
   }
 
-  /* 抬头 */
   .paper-head{
     display:flex;
     flex-wrap:wrap;
@@ -304,7 +382,6 @@
     font-size:.74rem;
   }
 
-  /* 章节 */
   .chapter{
     display:flex;
     align-items:center;
@@ -331,7 +408,6 @@
   }
   .chapter:first-of-type{margin-top:0;}
 
-  /* 正文 */
   .letter p{
     margin:0 0 1.15em;
     font-size:clamp(.99rem,2.75vw,1.075rem);
@@ -345,18 +421,6 @@
   }
   .letter p.no-indent{text-indent:0;}
 
-  /* 重点句 */
-  .highlight{
-    margin:1.6rem 0;
-    padding:.2rem 0 .2rem 1.2rem;
-    border-left:2px solid rgba(176,141,79,.5);
-    color:#6a5733;
-    text-indent:0;
-    font-size:clamp(1rem,2.9vw,1.1rem);
-    letter-spacing:.04em;
-  }
-
-  /* 诗句 */
   .verse{
     margin:3rem auto;
     max-width:32em;
@@ -381,7 +445,6 @@
   .verse::before{margin-bottom:1.4rem;}
   .verse::after{margin-top:1.4rem;}
 
-  /* 加拿大 · 约定 */
   .canada{
     position:relative;
     margin:3rem 0 2rem;
@@ -420,7 +483,6 @@
   }
   .canada p:last-child{margin-bottom:0;}
 
-  /* 落款 */
   .sign{
     margin-top:3.2rem;
     padding-top:2rem;
@@ -443,7 +505,6 @@
     display:inline-block;
   }
 
-  /* 火漆印章 */
   .seal-wrap{
     display:flex;
     justify-content:center;
@@ -476,7 +537,6 @@
     border-radius:50%;
   }
 
-  /* ================= 结尾 ================= */
   .ending{
     max-width:760px;
     margin:0 auto;
@@ -511,7 +571,6 @@
     color:#b3a88f;
   }
 
-  /* ================= 回到顶部 ================= */
   .to-top{
     position:fixed;
     right:clamp(14px,3vw,26px);
@@ -543,7 +602,6 @@
     border-color:var(--gold);
   }
 
-  /* ================= 滚动渐显 ================= */
   [data-reveal]{
     opacity:0;
     transform:translateY(24px);
@@ -554,7 +612,6 @@
     transform:none;
   }
 
-  /* ================= 响应式 ================= */
   @media (max-width:520px){
     .paper-head{
       flex-direction:column;
@@ -563,22 +620,15 @@
     }
     .letter p{text-align:left;}
     .seal{width:94px;height:94px;font-size:12.5px;}
+    .env-seal{width:64px;height:64px;font-size:9.5px;}
   }
 
   @media (prefers-reduced-motion: reduce){
     html{scroll-behavior:auto;}
-    .hero::before,.hero::after{animation:none;}
-    .hero h1 .ch,
-    .eyebrow,.hero .sub,.hero .note,.scroll-cue,.hero-rule{
-      animation:none;
-      opacity:1;
-      transform:none;
-      width:150px;
-    }
-    .hero-rule{width:150px;}
+    .halo,.ring,.leaf,.envelope,.env-hint{animation:none;}
     .leaf{display:none;}
-    .scroll-cue i::after{animation:none;}
     [data-reveal]{opacity:1;transform:none;transition:none;}
+    .envelope-screen.opening .envelope-wrap{animation:none;opacity:0;}
   }
 </style>
 </head>
@@ -587,116 +637,112 @@
 <div class="grain" aria-hidden="true"></div>
 <div class="progress" id="progress" aria-hidden="true"></div>
 
-<!-- ==================== 封面 ==================== -->
-<header class="hero">
+<!-- ==================== 信封封面（先看到这个） ==================== -->
+<div class="envelope-screen" id="envelopeScreen">
+  <div class="halo" aria-hidden="true"></div>
+  <div class="ring a" aria-hidden="true"></div>
+  <div class="ring b" aria-hidden="true"></div>
   <div class="leaves" id="leaves" aria-hidden="true"></div>
 
-  <div class="hero-inner">
-    <p class="eyebrow">YEO ZHI PO</p>
-    <h1 data-split>毕业快乐</h1>
-    <div class="hero-rule"></div>
-    <p class="sub">致那个在我最孤单的时候，愿意坐到我旁边的YEO ZHI PO</p>
-    <p class="note">抱歉我没有带礼物来。<br>所以我把想说的话，写成了这一页,我用最擅长的代码。</p>
+  <div class="envelope-wrap">
+    <p class="env-top">抱歉我没有带礼物来。<br>所以我把想说的话，写成了这一页,我用最擅长的代码。给 我 的 朋 友YEO ZHI PO</p>
+
+    <button class="envelope" id="envelope" aria-label="点击打开信封">
+      <span class="env-body" aria-hidden="true"></span>
+      <span class="env-stamp" aria-hidden="true">毕业<br>快乐</span>
+      <span class="env-seal" aria-hidden="true">启<br>封</span>
+      <span class="env-address" aria-hidden="true">致 · 最好的YEO ZHI PO</span>
+    </button>
+
+    <p class="env-hint">轻 轻 点 一 下 信 封</p>
   </div>
+</div>
 
-  <div class="scroll-cue" aria-hidden="true">
-    <span>往 下</span>
-    <i></i>
-  </div>
-</header>
+<!-- ==================== 主内容（打开后的信） ==================== -->
+<div class="site" id="site">
 
-<!-- ==================== 信 ==================== -->
-<main>
-  <article class="paper">
+  <main>
+    <article class="paper">
 
-    <div class="paper-head" data-reveal>
-      <span>致 · 我最好的朋友</span>
-      <span class="date">毕业典礼那天</span>
-    </div>
-
-    <div class="letter">
-
-      <!-- 那时候 -->
-      <h3 class="chapter" data-reveal>那 时 候</h3>
-      <p data-reveal>你还记得吗？小学刚认识的时候，我被孤立。我就一个人坐在那里，一个人看着外面。</p>
-      <p data-reveal>我不明白，你为什么愿意来当我的朋友。明明全部人都孤立我，但是谢谢你愿意跟我玩、跟我做朋友、跟我一起在后面做纸枪——每次都失败，哈哈哈哈哈。后来我才知道，网上的是假的。</p>
-
-      <!-- 蝴蝶效应 -->
-      <h3 class="chapter" data-reveal>蝴 蝶 效 应</h3>
-      <p data-reveal>如果当初我没有认识你，我不知道我会走到什么路、什么样的人生。</p>
-      <p data-reveal>也许就像蝴蝶效应一样——如果我没有认识你，我会走上一个完全不一样的人生。</p>
-
-      <!-- 抱歉 -->
-      <h3 class="chapter" data-reveal>抱 歉</h3>
-      <p data-reveal>你说得对，如果不是我害你成绩变差等等……我承认，我也很抱歉。其实我拖累了你很多。</p>
-      <p data-reveal>如果能轮回，我大概不会当你的朋友。谢谢你，我不知道要怎样回报你。也许你是我最能相信的朋友。</p>
-
-      <!-- 能量 -->
-      <h3 class="chapter" data-reveal>关 于 能 量</h3>
-      <p data-reveal>form 3 还是 form 4 的时候，我突然想到数学老师教的三角形，就上网看到一个物理学家——爱因斯坦说：能量不会消失，只是以另一种方式存在。</p>
-      <p data-reveal>也许我已经轮回了很多次，遇见你很多次，全部都像剧本写好一样，只是我看不到。</p>
-      <p data-reveal>那不如不要浪费我的时间，享受一下人生。反正人生是 100% 会死亡的，我在怕什么？</p>
-
-      <!-- 谢谢你 -->
-      <h3 class="chapter" data-reveal>谢 谢 你</h3>
-      <p data-reveal>之前我很孤独，不敢跟人讲话。谢谢你，我现在可以跟任何人讲话了。哈哈哈哈哈。</p>
-      <p data-reveal>我有没有讲太多废话？抱歉，成功浪费了你的时间。谢谢你。</p>
-
-      <!-- 岔路 -->
-      <h3 class="chapter" data-reveal>那 条 岔 路</h3>
-      <p data-reveal>上完小学，我本来确定要进 Abdul Samad，跟我哥读。但是幸好我哥一直反对我去那个学校，我才进了kwanghua，form 1 到 form 5。</p>
-      <p data-reveal>我也蛮后悔的。你讲的其实对，是我拖累你成绩差，哈哈哈哈哈。要不然你早就跟 Yi Ren 同班，在毕业典礼拿到很多奖。</p>
-      <p data-reveal>我也觉得自己很好笑——我已经这样拖累你了，你依然愿意当我的朋友。谢谢了。</p>
-
-      <!-- 以后 -->
-      <h3 class="chapter" data-reveal>关 于 以 后</h3>
-      <p data-reveal>我不知道以后能不能读一样的大学，哈哈哈哈哈。这个是不可能的，因为我上不到，我会选择去做工，除非我是天才——哈哈哈哈哈，我自己也懂我不是天才。</p>
-      <p data-reveal>如果时间不让我读大学，那我也只能认命。</p>
-
-      <!-- 约定 -->
-      <h3 class="chapter" data-reveal>我 们 的 约 定</h3>
-      <div class="canada" data-reveal>
-        <p class="label">CANADA</p>
-        <p>等我做到了，我们一起去 Canada 看风景。他们那边太美了，我想看一下大自然。</p>
-        <p>也许有一天，我请你去 Canada。</p>
+      <div class="paper-head" data-reveal>
+        <span>致 · 我最好的朋友YEO ZHI PO</span>
+        <span class="date">毕业典礼那天</span>
       </div>
 
-      <!-- 诗 -->
-      <p class="verse" data-reveal>
-        落叶如水风而去，<br>
-        落叶如时间，带走了时间。
-      </p>
+      <div class="letter">
 
-      <p data-reveal>谢谢你愿意在那么多年里，一直当我朋友。</p>
-      <p class="no-indent" data-reveal>我能做的，就是把这封信交到你手上。</p>
+        <h3 class="chapter" data-reveal>那 时 候</h3>
+        <p data-reveal>你还记得吗？小学刚认识的时候，我被孤立。我就一个人坐在那里，一个人看着外面。</p>
+        <p data-reveal>我不明白，你为什么愿意来当我的朋友。明明全部人都孤立我，但是谢谢你愿意跟我玩、跟我做朋友、跟我一起在后面做纸枪——每次都失败，哈哈哈哈哈。后来我才知道，网上的是假的。</p>
 
-    </div>
+        <h3 class="chapter" data-reveal>蝴 蝶 效 应</h3>
+        <p data-reveal>如果当初我没有认识你，我不知道我会走到什么路、什么样的人生。</p>
+        <p data-reveal>也许就像蝴蝶效应一样——如果我没有认识你，我会走上一个完全不一样的人生。</p>
 
-    <!-- 落款 -->
-    <div class="sign" data-reveal>
-      <p>毕业快乐。</p>
-      <p class="name">—— YEO ZHI PO</p>
-    </div>
+        <h3 class="chapter" data-reveal>抱 歉</h3>
+        <p data-reveal>你说得对，如果不是我害你成绩变差等等……我承认，我也很抱歉。其实我拖累了你很多。</p>
+        <p data-reveal>如果能轮回，我大概不会当你的朋友。谢谢你，我不知道要怎样回报你。也许你是我最能相信的朋友。</p>
 
-    <div class="seal-wrap" data-reveal>
-      <div class="seal" aria-label="毕业快乐印章">
-        毕 业<br>快 乐
+        <h3 class="chapter" data-reveal>关 于 能 量</h3>
+        <p data-reveal>form 3 还是 form 4 的时候，我突然想到数学老师教的三角形，就上网看到一个物理学家——爱因斯坦说：能量不会消失，只是以另一种方式存在。</p>
+        <p data-reveal>也许我已经轮回了很多次，遇见你很多次，全部都像剧本写好一样，只是我看不到。</p>
+        <p data-reveal>那不如不要浪费我的时间，享受一下人生。反正人生是 100% 会死亡的，我在怕什么？</p>
+
+        <h3 class="chapter" data-reveal>谢 谢 你</h3>
+        <p data-reveal>之前我很孤独，不敢跟人讲话。谢谢你，我现在可以跟任何人讲话了。哈哈哈哈哈。</p>
+        <p data-reveal>我有没有讲太多废话？抱歉，成功浪费了你的时间。谢谢你。</p>
+
+        <h3 class="chapter" data-reveal>那 条 岔 路</h3>
+        <p data-reveal>上完小学，我本来确定要进 Abdul Samad，跟我哥读。但是幸好我哥一直反对我去那个学校，我才进了kwanghua，form 1 到 form 5。</p>
+        <p data-reveal>我也蛮后悔的。你讲的其实对，是我拖累你成绩差，哈哈哈哈哈。要不然你早就跟 Yi Ren 同班，在毕业典礼拿到很多奖。</p>
+        <p data-reveal>我也觉得自己很好笑——我已经这样拖累你了，你依然愿意当我的朋友。谢谢了。</p>
+
+        <h3 class="chapter" data-reveal>关 于 以 后</h3>
+        <p data-reveal>我不知道以后能不能读一样的大学，哈哈哈哈哈。这个是不可能的，因为我上不到，我会选择去做工，除非我是天才——哈哈哈哈哈，我自己也懂我不是天才。</p>
+        <p data-reveal>如果时间不让我读大学，那我也只能认命。</p>
+
+        <h3 class="chapter" data-reveal>我 们 的 约 定</h3>
+        <div class="canada" data-reveal>
+          <p class="label">CANADA</p>
+          <p>等我做到了，我们一起去 Canada 看风景。他们那边太美了，我想看一下大自然。</p>
+          <p>也许有一天，我请你去 Canada。</p>
+        </div>
+
+        <p class="verse" data-reveal>
+          落叶如水风而去，<br>
+          落叶如时间，带走了时间。
+        </p>
+
+        <p data-reveal>谢谢你愿意在那么多年里，一直当我朋友。</p>
+        <p class="no-indent" data-reveal>我能做的，就是把这封信交到你手上。</p>
+
       </div>
-    </div>
 
-  </article>
+      <div class="sign" data-reveal>
+        <p>毕业快乐。</p>
+        <p class="name">—— YEO ZHI PO</p>
+      </div>
 
-  <!-- ==================== 结尾 ==================== -->
-  <section class="ending">
-    <h2 data-reveal>谢谢你</h2>
-    <p data-reveal>谢谢你，在我最不值得被喜欢的时候，选择坐到我旁边。</p>
-    <p data-reveal>这份礼物迟到了很久，但它是我认真写的。</p>
-    <p class="last" data-reveal>毕业快乐，我的朋友。</p>
-    <p class="fin" data-reveal>— 完 —</p>
-  </section>
-</main>
+      <div class="seal-wrap" data-reveal>
+        <div class="seal" aria-label="毕业快乐印章">
+          毕 业<br>快 乐
+        </div>
+      </div>
 
-<button class="to-top" id="toTop" aria-label="回到顶部">↑</button>
+    </article>
+
+    <section class="ending">
+      <h2 data-reveal>谢谢你</h2>
+      <p data-reveal>谢谢你，在我最不值得被喜欢的时候，选择坐到我旁边。</p>
+      <p data-reveal>这份礼物迟到了很久，但它是我认真写的。</p>
+      <p class="last" data-reveal>毕业快乐，我的朋友。</p>
+      <p class="fin" data-reveal>— 完 —</p>
+    </section>
+  </main>
+
+  <button class="to-top" id="toTop" aria-label="回到顶部">↑</button>
+
+</div>
 
 <script>
 (function () {
@@ -705,36 +751,17 @@
   var reduceMotion = window.matchMedia &&
     window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  /* ---------------- 1. 封面标题逐字浮现 ---------------- */
-  var splitEls = document.querySelectorAll('[data-split]');
-  splitEls.forEach(function (el) {
-    var text = el.textContent.trim();
-    el.textContent = '';
-    Array.prototype.forEach.call(text, function (ch, i) {
-      var span = document.createElement('span');
-      span.className = 'ch';
-      span.textContent = ch;
-      if (!reduceMotion) {
-        span.style.animationDelay = (0.45 + i * 0.13).toFixed(2) + 's';
-      } else {
-        span.style.opacity = '1';
-        span.style.transform = 'none';
-      }
-      el.appendChild(span);
-    });
-  });
-
-  /* ---------------- 2. 生成飘落的叶子 ---------------- */
+  /* ---------------- 1. 叶子 ---------------- */
   var layer = document.getElementById('leaves');
   if (layer && !reduceMotion) {
     var isSmall = window.innerWidth < 600;
-    var count = isSmall ? 11 : 20;
+    var count = isSmall ? 11 : 18;
 
     for (var i = 0; i < count; i++) {
       var leaf = document.createElement('span');
       leaf.className = 'leaf';
 
-      var size = 7 + Math.random() * 12;
+      var size = 7 + Math.random() * 11;
       leaf.style.width = size.toFixed(1) + 'px';
       leaf.style.height = size.toFixed(1) + 'px';
       leaf.style.left = (Math.random() * 100).toFixed(2) + 'vw';
@@ -743,17 +770,88 @@
       leaf.style.animationDuration = dur.toFixed(1) + 's';
       leaf.style.animationDelay = (-Math.random() * dur).toFixed(1) + 's';
       leaf.style.setProperty('--drift', (Math.random() * 180 - 90).toFixed(0) + 'px');
-      leaf.style.opacity = '0';
 
       layer.appendChild(leaf);
     }
   }
 
-  /* ---------------- 3. 阅读进度条 ---------------- */
+  /* ---------------- 2. 打开信封 ---------------- */
+  var screen = document.getElementById('envelopeScreen');
+  var envelope = document.getElementById('envelope');
+  var site = document.getElementById('site');
   var progress = document.getElementById('progress');
+  var opened = false;
+
+  function openEnvelope() {
+    if (opened) return;
+    opened = true;
+
+    // 信封向上飞走
+    screen.classList.add('opening');
+
+    // 等信封飞出去一点，开始显示信
+    setTimeout(function () {
+      screen.classList.add('gone');
+      site.classList.add('show');
+      document.body.style.overflowY = 'auto';
+      if (progress) progress.classList.add('on');
+
+      // 触发信纸里的渐显
+      revealAll();
+
+      // 让页面滚到最上面
+      window.scrollTo(0, 0);
+    }, reduceMotion ? 50 : 620);
+  }
+
+  // 一开始先锁住滚动
+  document.body.style.overflowY = 'hidden';
+
+  if (envelope) {
+    envelope.addEventListener('click', openEnvelope);
+
+    // 键盘 Enter / Space 也能打开
+    envelope.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar') {
+        e.preventDefault();
+        openEnvelope();
+      }
+    });
+  }
+
+  /* ---------------- 3. 信纸滚动渐显 ---------------- */
+  var revealItems = document.querySelectorAll('[data-reveal]');
+  var io = null;
+
+  function revealAll() {
+    if (reduceMotion || !('IntersectionObserver' in window)) {
+      revealItems.forEach(function (el) { el.classList.add('in'); });
+      return;
+    }
+
+    if (io) return;
+
+    io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('in');
+          io.unobserve(entry.target);
+        }
+      });
+    }, {
+      threshold: 0.1,
+      rootMargin: '0px 0px -60px 0px'
+    });
+
+    revealItems.forEach(function (el) { io.observe(el); });
+  }
+
+  /* ---------------- 4. 阅读进度条 ---------------- */
   var ticking = false;
 
   function updateProgress() {
+    if (!opened) { ticking = false; return; }
+
     var doc = document.documentElement;
     var max = doc.scrollHeight - window.innerHeight;
     var pct = max > 0 ? (window.scrollY / max) * 100 : 0;
@@ -768,34 +866,11 @@
     }
   }, { passive: true });
 
-  updateProgress();
-
-  /* ---------------- 4. 滚动渐显 ---------------- */
-  var revealItems = document.querySelectorAll('[data-reveal]');
-
-  if ('IntersectionObserver' in window && !reduceMotion) {
-    var io = new IntersectionObserver(function (entries) {
-      entries.forEach(function (entry) {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('in');
-          io.unobserve(entry.target);
-        }
-      });
-    }, {
-      threshold: 0.1,
-      rootMargin: '0px 0px -60px 0px'
-    });
-
-    revealItems.forEach(function (el) { io.observe(el); });
-  } else {
-    revealItems.forEach(function (el) { el.classList.add('in'); });
-  }
-
   /* ---------------- 5. 回到顶部 ---------------- */
   var toTop = document.getElementById('toTop');
 
   function toggleTop() {
-    if (!toTop) return;
+    if (!toTop || !opened) return;
     if (window.scrollY > window.innerHeight * 0.85) {
       toTop.classList.add('show');
     } else {
@@ -804,7 +879,6 @@
   }
 
   window.addEventListener('scroll', toggleTop, { passive: true });
-  toggleTop();
 
   if (toTop) {
     toTop.addEventListener('click', function () {
